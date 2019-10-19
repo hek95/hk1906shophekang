@@ -4,49 +4,83 @@ import com.qf.dao.GoodsImageMapper;
 import com.qf.dao.GoodsMapper;
 import com.qf.entity.Goods;
 import com.qf.entity.GoodsImage;
+import com.qf.feign.ItemFeign;
 import com.qf.feign.SearchFeign;
 import com.qf.service.IGoodsService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
 @Service
 public class GoodsServiceImpl implements IGoodsService {
+
     @Autowired
     private GoodsMapper goodsMapper;
+
     @Autowired
     private GoodsImageMapper goodsImageMapper;
 
     @Autowired
     private SearchFeign searchFeign;
 
+    @Autowired
+    private ItemFeign itemFeign;
 
-    @Override  //查询所有商品的方法
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Override
     public List<Goods> queryAllGoods() {
         return goodsMapper.queryAllGoods();
     }
 
-    @Override  //添加商品的方法
+    @Override
     @Transactional
-    public int insertgoods(Goods goods) {
+    public int insertGoods(Goods goods) {
+
+        //保存商品信息
         goodsMapper.insert(goods);
+
         //保存商品图片
-        //封装一个封面对象
-        GoodsImage fengMian = new GoodsImage(goods.getId(), null, goods.getFengmian(), 1);
+
+        //封装一个封面的对象
+        GoodsImage fengMian = new GoodsImage(
+                goods.getId(),
+                null,
+                goods.getFengmian(),
+                1
+        );
+
         goodsImageMapper.insert(fengMian);
+
         //保存其他图片
         for (String otherUrl : goods.getOtherImg()) {
-            GoodsImage otherImage = new GoodsImage(goods.getId(), null, otherUrl, 0);
+            GoodsImage otherImage = new GoodsImage(
+                    goods.getId(),
+                    null,
+                    otherUrl,
+                    0
+            );
+
             goodsImageMapper.insert(otherImage);
         }
-        //调用搜索服务将最新的商品信息保存到solr索引库中
-        if(!searchFeign.insertSolr(goods)){
-            //索引库添加失败
-            throw new RuntimeException("索引库添加失败！");
-        }
+
+//        //调用搜索服务将最新的商品信息保存到solr索引库中
+//        if(!searchFeign.insertSolr(goods)){
+//            //索引库添加失败
+//            throw new RuntimeException("索引库添加失败！");
+//        }
+//
+//        //调用详情服务生成该商品的静态页面
+//        itemFeign.createHtml(goods);
+
+
+        //将goods对象发送到指定的交换机中
+        rabbitTemplate.convertAndSend("goods_exchange", "", goods);
 
         return 1;
     }
 }
-

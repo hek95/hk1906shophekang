@@ -7,6 +7,8 @@
         <module>shop_commons</module>
         <module>shop_entity</module>
         <module>spring_web</module>
+        <module>test_rabbitmq</module>
+        <module>test_redis</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

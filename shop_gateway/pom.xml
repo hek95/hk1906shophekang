@@ -13,6 +13,7 @@
     <name>shop_gateway</name>
     <description>Demo project for Spring Boot</description>
 
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -28,12 +29,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-client</artifactId>
         </dependency>
     </dependencies>
-
-
 
 </project>

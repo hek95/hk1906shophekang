@@ -26,12 +26,14 @@ public class GoodsController {
         return goods;
     }
 
+
     //商品添加
     @RequestMapping("/insert")
     @ResponseBody
+
     public boolean goodsInsert(@RequestBody Goods goods) {
         System.out.println("商品服务接受到添加商品的请求：" + goods);
-        int result = goodsService.insertgoods(goods);
+        int result = goodsService.insertGoods(goods);
         return result > 0;
     }
 }

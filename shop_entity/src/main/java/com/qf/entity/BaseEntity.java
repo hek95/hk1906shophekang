@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain=true)
-public class BaseEntity implements Serializable {
+public class BaseEntity implements Serializable  {
     @TableId(type= IdType.AUTO)
     protected Integer id;
     protected Integer status=0;

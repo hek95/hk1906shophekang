@@ -2,5 +2,5 @@ spring:
   cloud:
     config:
       name: application
-      profile: front,eureka
+      profile: front,eureka,themleaf
       uri: http://localhost:20000

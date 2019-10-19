@@ -5,7 +5,8 @@ import com.qf.entity.Goods;
 import java.util.List;
 
 public interface IGoodsService {
-    List<Goods> queryAllGoods();
-    int insertgoods(Goods goods);
 
+    List<Goods> queryAllGoods();
+
+    int insertGoods(Goods goods);
 }
